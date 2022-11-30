@@ -41,10 +41,20 @@ namespace Ev1Ej
 
                         if (dr["password"].ToString() == tbPsswd.Text)
                         {
-                            TPV tpv = new TPV();
-                            this.Hide();
-                            tpv.ShowDialog();
-                            this.Close();
+                            if ((int) dr["admin"] == 1)
+                            {
+                                Menu menu = new Menu(true);
+                                this.Hide();
+                                menu.ShowDialog();
+                                this.Close();
+                            }
+                            else
+                            {
+                                Productos productosInter = new Productos(false);
+                                this.Hide();
+                                productosInter.ShowDialog();
+                                this.Close();
+                            }
                         }
                         else
                         {
