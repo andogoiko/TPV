@@ -34,6 +34,7 @@
             this.tbUser = new System.Windows.Forms.TextBox();
             this.tbPsswd = new System.Windows.Forms.TextBox();
             this.bEntrar = new System.Windows.Forms.Button();
+            this.bExit = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lTitle
@@ -80,7 +81,7 @@
             // 
             // bEntrar
             // 
-            this.bEntrar.Location = new System.Drawing.Point(204, 380);
+            this.bEntrar.Location = new System.Drawing.Point(255, 380);
             this.bEntrar.Name = "bEntrar";
             this.bEntrar.Size = new System.Drawing.Size(67, 23);
             this.bEntrar.TabIndex = 5;
@@ -88,11 +89,22 @@
             this.bEntrar.UseVisualStyleBackColor = true;
             this.bEntrar.MouseClick += new System.Windows.Forms.MouseEventHandler(this.login);
             // 
+            // bExit
+            // 
+            this.bExit.Location = new System.Drawing.Point(150, 380);
+            this.bExit.Name = "bExit";
+            this.bExit.Size = new System.Drawing.Size(67, 23);
+            this.bExit.TabIndex = 6;
+            this.bExit.Text = "Salir";
+            this.bExit.UseVisualStyleBackColor = true;
+            this.bExit.MouseClick += new System.Windows.Forms.MouseEventHandler(this.close);
+            // 
             // Login
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(472, 474);
+            this.Controls.Add(this.bExit);
             this.Controls.Add(this.bEntrar);
             this.Controls.Add(this.tbPsswd);
             this.Controls.Add(this.tbUser);
@@ -114,5 +126,6 @@
         private TextBox tbUser;
         private TextBox tbPsswd;
         private Button bEntrar;
+        private Button bExit;
     }
 }

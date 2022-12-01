@@ -74,5 +74,10 @@ namespace Ev1Ej
 
 
         }
+
+        private void close(object sender, MouseEventArgs e)
+        {
+            Application.Exit();
+        }
     }
 }

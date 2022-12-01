@@ -62,14 +62,16 @@ namespace Ev1Ej
                     while (dr.Read())
                     {
 
-                        /*tbUsername.Text = dr["username"].ToString();
+                        tbArticulo.Text = dr["articulo"].ToString();
 
-                        tbPassword.Text = dr["password"].ToString();
+                        tbPrecio.Text = dr["precio"].ToString();
 
-                        if ((bool)dr["admin"] == true)
-                        {
-                            cbAdmin.Checked = true;
-                        }*/
+                        tbStock.Text = dr["stock"].ToString();
+
+                        tbImpuestos.Text = dr["impuestos"].ToString();
+
+                        tbTipo.Text = dr["tipo"].ToString();
+
 
                     }
 
@@ -95,8 +97,8 @@ namespace Ev1Ej
                     {
                         cmd.ExecuteReader();
 
-                        Usuarios.clearList();
-                        Usuarios.feedList();
+                        Productos.clearList();
+                        Productos.feedList();
 
                         this.Close();
                     }
@@ -117,11 +119,50 @@ namespace Ev1Ej
             }
             else
             {
-                //UPDATE PRODUCTOS SET articulo = NULL, precio = NULL, stock = NULL, impuestos = NULL, tipo = NULL WHERE codigo = 0;
 
-            }
+                using (MySqlConnection conn = new MySqlConnection(connStr))
+                {
+                    conn.Open();
+
+                    MySqlCommand cmd = new MySqlCommand("UPDATE PRODUCTOS SET articulo = '" + tbArticulo.Text + "', precio = " + tbPrecio.Text + ", stock = " + tbStock.Text + ", impuestos = " + tbImpuestos.Text + ", tipo = '" + tbTipo.Text + "' WHERE codigo = " + productFromList + ";", conn);
+
+                    try
+                    {
+                        cmd.ExecuteReader();
+
+                        Productos.clearList();
+                        Productos.feedList();
+
+                        this.Close();
+                    }
+                    catch (MySqlException)
+                    {
+                        // Initializes the variables to pass to the MessageBox.Show method.
+                        string message = "El producto tiene algún dato incorrecto";
+                        string caption = "Error al modificar";
+                        MessageBoxButtons buttons = MessageBoxButtons.OK;
+                        DialogResult result;
+
+                        // Displays the MessageBox.
+                        MessageBox.Show(message, caption, buttons);
+
+                    }
+
+                }
+
+             }
 
             this.Close();
+        }
+
+        private void checkDoubleNumber(object sender, KeyEventArgs e)
+        {
+
+        }
+
+        private void checkIntNumber(object sender, KeyEventArgs e)
+        {
+
         }
     }
 }
