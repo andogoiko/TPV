@@ -34,6 +34,8 @@
             this.tbUsername = new System.Windows.Forms.TextBox();
             this.tbPassword = new System.Windows.Forms.TextBox();
             this.cbAdmin = new System.Windows.Forms.CheckBox();
+            this.gpUsuario = new System.Windows.Forms.GroupBox();
+            this.gpUsuario.SuspendLayout();
             this.SuspendLayout();
             // 
             // bAceptar
@@ -49,7 +51,7 @@
             // lUsername
             // 
             this.lUsername.AutoSize = true;
-            this.lUsername.Location = new System.Drawing.Point(120, 36);
+            this.lUsername.Location = new System.Drawing.Point(40, 19);
             this.lUsername.Name = "lUsername";
             this.lUsername.Size = new System.Drawing.Size(63, 15);
             this.lUsername.TabIndex = 1;
@@ -58,7 +60,7 @@
             // lPassword
             // 
             this.lPassword.AutoSize = true;
-            this.lPassword.Location = new System.Drawing.Point(120, 152);
+            this.lPassword.Location = new System.Drawing.Point(40, 135);
             this.lPassword.Name = "lPassword";
             this.lPassword.Size = new System.Drawing.Size(60, 15);
             this.lPassword.TabIndex = 2;
@@ -66,14 +68,14 @@
             // 
             // tbUsername
             // 
-            this.tbUsername.Location = new System.Drawing.Point(120, 75);
+            this.tbUsername.Location = new System.Drawing.Point(40, 58);
             this.tbUsername.Name = "tbUsername";
             this.tbUsername.Size = new System.Drawing.Size(124, 23);
             this.tbUsername.TabIndex = 4;
             // 
             // tbPassword
             // 
-            this.tbPassword.Location = new System.Drawing.Point(120, 191);
+            this.tbPassword.Location = new System.Drawing.Point(40, 174);
             this.tbPassword.Name = "tbPassword";
             this.tbPassword.Size = new System.Drawing.Size(124, 23);
             this.tbPassword.TabIndex = 5;
@@ -81,7 +83,7 @@
             // cbAdmin
             // 
             this.cbAdmin.AutoSize = true;
-            this.cbAdmin.Location = new System.Drawing.Point(120, 266);
+            this.cbAdmin.Location = new System.Drawing.Point(40, 249);
             this.cbAdmin.Name = "cbAdmin";
             this.cbAdmin.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.cbAdmin.Size = new System.Drawing.Size(65, 19);
@@ -89,21 +91,32 @@
             this.cbAdmin.Text = ":Admin";
             this.cbAdmin.UseVisualStyleBackColor = true;
             // 
+            // gpUsuario
+            // 
+            this.gpUsuario.Controls.Add(this.lUsername);
+            this.gpUsuario.Controls.Add(this.cbAdmin);
+            this.gpUsuario.Controls.Add(this.lPassword);
+            this.gpUsuario.Controls.Add(this.tbPassword);
+            this.gpUsuario.Controls.Add(this.tbUsername);
+            this.gpUsuario.Location = new System.Drawing.Point(71, 41);
+            this.gpUsuario.Name = "gpUsuario";
+            this.gpUsuario.Size = new System.Drawing.Size(200, 293);
+            this.gpUsuario.TabIndex = 7;
+            this.gpUsuario.TabStop = false;
+            this.gpUsuario.Text = "Usuario";
+            // 
             // FormUsuario
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(336, 429);
-            this.Controls.Add(this.cbAdmin);
-            this.Controls.Add(this.tbPassword);
-            this.Controls.Add(this.tbUsername);
-            this.Controls.Add(this.lPassword);
-            this.Controls.Add(this.lUsername);
+            this.Controls.Add(this.gpUsuario);
             this.Controls.Add(this.bAceptar);
             this.Name = "FormUsuario";
             this.Text = "FormUsuario";
+            this.gpUsuario.ResumeLayout(false);
+            this.gpUsuario.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -115,5 +128,6 @@
         private TextBox tbUsername;
         private TextBox tbPassword;
         private CheckBox cbAdmin;
+        private GroupBox gpUsuario;
     }
 }

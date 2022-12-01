@@ -41,18 +41,18 @@ namespace Ev1Ej
 
                         if (dr["password"].ToString() == tbPsswd.Text)
                         {
-                            if ((int) dr["admin"] == 1)
+                            if ((bool) dr["admin"] == true)
                             {
-                                Menu menu = new Menu(true);
+                                MenuAdmin menuAdmin = new MenuAdmin(true);
                                 this.Hide();
-                                menu.ShowDialog();
+                                menuAdmin.ShowDialog();
                                 this.Close();
                             }
                             else
                             {
-                                Productos productosInter = new Productos(false);
+                                MenuCamarero menuCamarero = new MenuCamarero(false);
                                 this.Hide();
-                                productosInter.ShowDialog();
+                                menuCamarero.ShowDialog();
                                 this.Close();
                             }
                         }

@@ -30,7 +30,7 @@
         {
             this.salirUsuarios = new System.Windows.Forms.Button();
             this.gpListUsuarios = new System.Windows.Forms.GroupBox();
-            this.listBox1 = new System.Windows.Forms.ListBox();
+            this.lbUsuarios = new System.Windows.Forms.ListBox();
             this.anyadirUsuario = new System.Windows.Forms.Button();
             this.modificarUsuario = new System.Windows.Forms.Button();
             this.eliminarUsuario = new System.Windows.Forms.Button();
@@ -49,7 +49,7 @@
             // 
             // gpListUsuarios
             // 
-            this.gpListUsuarios.Controls.Add(this.listBox1);
+            this.gpListUsuarios.Controls.Add(this.lbUsuarios);
             this.gpListUsuarios.Location = new System.Drawing.Point(12, 49);
             this.gpListUsuarios.Name = "gpListUsuarios";
             this.gpListUsuarios.Size = new System.Drawing.Size(147, 248);
@@ -57,14 +57,16 @@
             this.gpListUsuarios.TabStop = false;
             this.gpListUsuarios.Text = "Usuarios";
             // 
-            // listBox1
+            // lbUsuarios
             // 
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.ItemHeight = 15;
-            this.listBox1.Location = new System.Drawing.Point(6, 22);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(135, 214);
-            this.listBox1.TabIndex = 0;
+            this.lbUsuarios.FormattingEnabled = true;
+            this.lbUsuarios.ItemHeight = 15;
+            this.lbUsuarios.Location = new System.Drawing.Point(6, 22);
+            this.lbUsuarios.Name = "lbUsuarios";
+            this.lbUsuarios.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
+            this.lbUsuarios.Size = new System.Drawing.Size(135, 214);
+            this.lbUsuarios.TabIndex = 0;
+            this.lbUsuarios.MouseDown += new System.Windows.Forms.MouseEventHandler(this.checkSelection);
             // 
             // anyadirUsuario
             // 
@@ -74,24 +76,29 @@
             this.anyadirUsuario.Size = new System.Drawing.Size(57, 47);
             this.anyadirUsuario.TabIndex = 2;
             this.anyadirUsuario.UseVisualStyleBackColor = true;
+            this.anyadirUsuario.MouseClick += new System.Windows.Forms.MouseEventHandler(this.openUserForm);
             // 
             // modificarUsuario
             // 
+            this.modificarUsuario.Enabled = false;
             this.modificarUsuario.Image = global::Ev1Ej.Properties.Resources.edit;
             this.modificarUsuario.Location = new System.Drawing.Point(213, 153);
             this.modificarUsuario.Name = "modificarUsuario";
             this.modificarUsuario.Size = new System.Drawing.Size(57, 47);
             this.modificarUsuario.TabIndex = 3;
             this.modificarUsuario.UseVisualStyleBackColor = true;
+            this.modificarUsuario.MouseClick += new System.Windows.Forms.MouseEventHandler(this.openUserForm);
             // 
             // eliminarUsuario
             // 
+            this.eliminarUsuario.Enabled = false;
             this.eliminarUsuario.Image = global::Ev1Ej.Properties.Resources.delete;
             this.eliminarUsuario.Location = new System.Drawing.Point(213, 238);
             this.eliminarUsuario.Name = "eliminarUsuario";
             this.eliminarUsuario.Size = new System.Drawing.Size(57, 47);
             this.eliminarUsuario.TabIndex = 4;
             this.eliminarUsuario.UseVisualStyleBackColor = true;
+            this.eliminarUsuario.MouseClick += new System.Windows.Forms.MouseEventHandler(this.deleteUsers);
             // 
             // Usuarios
             // 
@@ -114,7 +121,7 @@
 
         private Button salirUsuarios;
         private GroupBox gpListUsuarios;
-        private ListBox listBox1;
+        private ListBox lbUsuarios;
         private Button anyadirUsuario;
         private Button modificarUsuario;
         private Button eliminarUsuario;

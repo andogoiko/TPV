@@ -32,28 +32,32 @@
             this.modificarProducto = new System.Windows.Forms.Button();
             this.anyadirProducto = new System.Windows.Forms.Button();
             this.gpListProductos = new System.Windows.Forms.GroupBox();
-            this.listBox1 = new System.Windows.Forms.ListBox();
+            this.lbProductos = new System.Windows.Forms.ListBox();
             this.salirProductos = new System.Windows.Forms.Button();
             this.gpListProductos.SuspendLayout();
             this.SuspendLayout();
             // 
             // eliminarProducto
             // 
+            this.eliminarProducto.Enabled = false;
             this.eliminarProducto.Image = global::Ev1Ej.Properties.Resources.delete;
             this.eliminarProducto.Location = new System.Drawing.Point(211, 238);
             this.eliminarProducto.Name = "eliminarProducto";
             this.eliminarProducto.Size = new System.Drawing.Size(57, 47);
             this.eliminarProducto.TabIndex = 9;
             this.eliminarProducto.UseVisualStyleBackColor = true;
+            this.eliminarProducto.MouseClick += new System.Windows.Forms.MouseEventHandler(this.deleteProduct);
             // 
             // modificarProducto
             // 
+            this.modificarProducto.Enabled = false;
             this.modificarProducto.Image = global::Ev1Ej.Properties.Resources.edit;
             this.modificarProducto.Location = new System.Drawing.Point(211, 153);
             this.modificarProducto.Name = "modificarProducto";
             this.modificarProducto.Size = new System.Drawing.Size(57, 47);
             this.modificarProducto.TabIndex = 8;
             this.modificarProducto.UseVisualStyleBackColor = true;
+            this.modificarProducto.MouseClick += new System.Windows.Forms.MouseEventHandler(this.openProductForm);
             // 
             // anyadirProducto
             // 
@@ -63,10 +67,11 @@
             this.anyadirProducto.Size = new System.Drawing.Size(57, 47);
             this.anyadirProducto.TabIndex = 7;
             this.anyadirProducto.UseVisualStyleBackColor = true;
+            this.anyadirProducto.MouseClick += new System.Windows.Forms.MouseEventHandler(this.openProductForm);
             // 
             // gpListProductos
             // 
-            this.gpListProductos.Controls.Add(this.listBox1);
+            this.gpListProductos.Controls.Add(this.lbProductos);
             this.gpListProductos.Location = new System.Drawing.Point(10, 49);
             this.gpListProductos.Name = "gpListProductos";
             this.gpListProductos.Size = new System.Drawing.Size(147, 248);
@@ -74,14 +79,15 @@
             this.gpListProductos.TabStop = false;
             this.gpListProductos.Text = "Productos";
             // 
-            // listBox1
+            // lbProductos
             // 
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.ItemHeight = 15;
-            this.listBox1.Location = new System.Drawing.Point(6, 22);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(135, 214);
-            this.listBox1.TabIndex = 0;
+            this.lbProductos.FormattingEnabled = true;
+            this.lbProductos.ItemHeight = 15;
+            this.lbProductos.Location = new System.Drawing.Point(6, 22);
+            this.lbProductos.Name = "lbProductos";
+            this.lbProductos.Size = new System.Drawing.Size(135, 214);
+            this.lbProductos.TabIndex = 0;
+            this.lbProductos.MouseDown += new System.Windows.Forms.MouseEventHandler(this.checkSelection);
             // 
             // salirProductos
             // 
@@ -116,7 +122,7 @@
         private Button modificarProducto;
         private Button anyadirProducto;
         private GroupBox gpListProductos;
-        private ListBox listBox1;
+        private ListBox lbProductos;
         private Button salirProductos;
     }
 }

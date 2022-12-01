@@ -10,16 +10,16 @@ using System.Windows.Forms;
 
 namespace Ev1Ej
 {
-    public partial class Menu : Form
+    public partial class MenuAdmin : Form
     {
 
         private bool admin;
-        public Menu()
+        public MenuAdmin()
         {
             InitializeComponent();
         }
 
-        public Menu(bool admin)
+        public MenuAdmin(bool admin)
         {
             this.admin = admin;
             InitializeComponent();
@@ -35,7 +35,7 @@ namespace Ev1Ej
 
         private void goToProductos(object sender, MouseEventArgs e)
         {
-            Productos productos = new Productos(true);
+            Productos productos = new Productos(admin);
             this.Hide();
             productos.ShowDialog();
             this.Close();
@@ -43,7 +43,7 @@ namespace Ev1Ej
 
         private void goToUsuarios(object sender, MouseEventArgs e)
         {
-            Usuarios usuarios = new Usuarios(true);
+            Usuarios usuarios = new Usuarios(admin);
             this.Hide();
             usuarios.ShowDialog();
             this.Close();
