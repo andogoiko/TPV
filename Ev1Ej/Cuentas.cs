@@ -24,6 +24,8 @@ namespace Ev1Ej
         private static string user = "root";
         private static string pwd = "root";
 
+        private int aPagar = 0;
+
         private static string connStr;
 
         private static ListBox lbProd;
@@ -137,7 +139,14 @@ namespace Ev1Ej
                             }
                             else
                             {
-                                //alerta
+                                // Initializes the variables to pass to the MessageBox.Show method.
+                                string message = "No quedan existencias";
+                                string caption = "Error de stock";
+                                MessageBoxButtons buttons = MessageBoxButtons.OK;
+                                DialogResult result;
+
+                                // Displays the MessageBox.
+                                MessageBox.Show(message, caption, buttons);
                             }
 
 
@@ -169,60 +178,52 @@ namespace Ev1Ej
 
                 //mirar si hay más de 1 en cantidad y hacer 2 cosas distintas depende de ello
 
-                if (lCuenta.Count() > 0)
+                 busqueda = lCuenta.Where(Producto => Producto.articulo == lbProductos.SelectedItems[0].ToString()).ToList();
+
+                if (busqueda.ElementAt(0).cantidad > 1)
                 {
-                    busqueda = lCuenta.Where(Producto => Producto.articulo == lbProductos.SelectedItems[0].ToString()).ToList();
-                }
 
+                    int a = lbCuenta.Items.IndexOf(busqueda.ElementAt(0).articulo + " (" + busqueda.ElementAt(0).cantidad + ")");
 
+                    lbCuenta.Items.RemoveAt(a);
 
-                if (busqueda.Count() > 0)
-                {
-                    lCuenta.ForEach(Producto => {
+                    busqueda.ElementAt(0).cantidad--;
 
-                        if (Producto.articulo == lbProductos.SelectedItems[0].ToString())
-                        {
-
-                            var prodAlmacen = lProductos.Where(ProductoAlamc => ProductoAlamc.articulo == Producto.articulo).ToList().ElementAt(0);
-
-                            System.Diagnostics.Debug.WriteLine(prodAlmacen.cantidad + "");
-
-                            if (Producto.cantidad < prodAlmacen.cantidad)
-                            {
-                                int a = lbCuenta.Items.IndexOf(Producto.articulo + " (" + Producto.cantidad + ")");
-
-                                lbCuenta.Items.RemoveAt(a);
-
-                                Producto.cantidad++;
-
-                                lbCuenta.Items.Insert(a, Producto.articulo + " (" + Producto.cantidad + ")");
-                            }
-
-
-
-                        }
-                    });
+                    lbCuenta.Items.Insert(a, busqueda.ElementAt(0).articulo + " (" + busqueda.ElementAt(0).cantidad + ")");
 
                 }
                 else
                 {
+                    lCuenta = lCuenta.Where(cProd => cProd != busqueda.ElementAt(0)).ToList();
 
-                    Producto prodSelec = lProductos.Where(Producto => Producto.articulo == lbProductos.SelectedItems[0].ToString()).ElementAt(0);
-
-                    lCuenta.Add(new Producto(prodSelec.codigo, prodSelec.articulo, prodSelec.precio, 1, prodSelec.impuestos, prodSelec.tipo));
-
-                    lbCuenta.Items.Add(lbProductos.SelectedItems[0].ToString() + " (1)");
+                    lbCuenta.Items.Remove(lbCuenta.SelectedItems[0]);
                 }
 
-                lbProductos.SetSelected(0, false);
+
+                lbCuenta.SetSelected(0, false);
 
             }
+        }
+        
+
+        private void totalAPagar()
+        {
+            //recorrer el array de cuenta hacer el calculo y llamar a esta función cada vez k se añada o quite algo
         }
 
         private void payNImpress(object sender, MouseEventArgs e)
         {
+            //recorrer la completa y mirar cual esta en cuenta, creas nueva lista y copias todo menos stock, debes restar lo de cuanta a productos y llamas a un update
+
             //  hay k coger los k esten en ambas listas y actualizar bbdd mediante el de la lista de productos, pues ahí está reflejado en vivo el stock
             // se hace cuenta de pagar mediante la lista de cuenta y imprimir no se como va la vd
         }
+
+        private void print()
+        {
+
+        }
+
+
     }
 }
