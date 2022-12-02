@@ -64,11 +64,11 @@ namespace Ev1Ej
 
                         tbArticulo.Text = dr["articulo"].ToString();
 
-                        tbPrecio.Text = dr["precio"].ToString();
+                        tbPrecio.Text = dr["precio"].ToString().Replace(',', '.');
 
                         tbStock.Text = dr["stock"].ToString();
 
-                        tbImpuestos.Text = dr["impuestos"].ToString();
+                        tbImpuestos.Text = dr["impuestos"].ToString().Replace(',', '.');
 
                         tbTipo.Text = dr["tipo"].ToString();
 
@@ -155,14 +155,30 @@ namespace Ev1Ej
             this.Close();
         }
 
-        private void checkDoubleNumber(object sender, KeyEventArgs e)
-        {
 
+        private void checkDoubleNumber(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar) && e.KeyChar != '.')
+            {
+
+                e.Handled = true;
+            }
+
+            // hacer que solo acepte una coma decimal
+
+            if (e.KeyChar == '.' && (sender as TextBox).Text.IndexOf('.') > -1)
+            {
+                e.Handled = true;
+            }
         }
 
-        private void checkIntNumber(object sender, KeyEventArgs e)
+        private void checkIntNumber(object sender, KeyPressEventArgs e)
         {
+            if (!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
+            {
 
+                e.Handled = true;
+            }
         }
     }
 }

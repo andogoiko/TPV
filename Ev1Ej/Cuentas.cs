@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualBasic.ApplicationServices;
 using MySqlConnector;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -31,7 +32,7 @@ namespace Ev1Ej
 
         private static List<Producto> lProductos;
 
-        private static List<Producto> lCuenta;
+        private static List<Producto> lCuenta = new List<Producto>();
 
         public Cuentas()
         {
@@ -43,17 +44,12 @@ namespace Ev1Ej
             this.admin = admin;
             InitializeComponent();
 
-            using (MySqlConnection conn = new MySqlConnection(connStr))
-            {
+            lbProd = lbProductos;
 
-                conn.Open();
+            lbCliCuenta = lbCuenta;
 
-                lbProd = lbProductos;
-
-                lbCliCuenta = lbCuenta;
-
-                feedList();
-            }
+            feedList();
+            
 
     }
 
@@ -80,10 +76,9 @@ namespace Ev1Ej
 
                     lbProd.Items.Add(dr["articulo"].ToString());
 
-                    p = new Producto((int)dr["codigo"], dr["articulo"].ToString(), (double)dr["precio"], (int)dr["cantidad"], (double)dr["impuestos"], dr["tipo"].ToString());
+                    p = new Producto((int)dr["codigo"], dr["articulo"].ToString(), (double)dr["precio"], (int)dr["stock"], (double)dr["impuestos"], dr["tipo"].ToString());
 
                     lProductos.Add(p);
-
                 }
 
             }
@@ -107,13 +102,121 @@ namespace Ev1Ej
 
         private void addToCuenta(object sender, MouseEventArgs e)
         {
-            //al añadir mirar si esta el k tenga ese code en el array, si esta añadir 1 mas en cantidad (lo k aparecerá en el lb sera articulo name + cant)
-            //ala añadir tmb mirar el stock real y si keda en 0 invalidar ese elemento de la lb
+
+            while (lbProductos.SelectedItems.Count > 0)
+            {
+
+                var busqueda = new List<Producto>();
+
+                if (lCuenta.Count() > 0)
+                {
+                    busqueda = lCuenta.Where(Producto => Producto.articulo == lbProductos.SelectedItems[0].ToString()).ToList();
+                }
+                
+
+                if (busqueda.Count() > 0)
+                {
+                    lCuenta.ForEach(Producto => {
+
+                        if(Producto.articulo == lbProductos.SelectedItems[0].ToString())
+                        {
+
+                            var prodAlmacen = lProductos.Where(ProductoAlamc => ProductoAlamc.articulo == Producto.articulo).ToList().ElementAt(0);
+
+                            System.Diagnostics.Debug.WriteLine(prodAlmacen.cantidad + "");
+
+                            if (Producto.cantidad < prodAlmacen.cantidad)
+                            {
+                                int a = lbCuenta.Items.IndexOf(Producto.articulo + " (" + Producto.cantidad + ")");
+
+                                lbCuenta.Items.RemoveAt(a);
+
+                                Producto.cantidad++;
+
+                                lbCuenta.Items.Insert(a, Producto.articulo + " (" + Producto.cantidad + ")");
+                            }
+                            else
+                            {
+                                //alerta
+                            }
+
+
+                        }
+                    });
+
+                }
+                else
+                {
+
+                    Producto prodSelec = lProductos.Where(Producto => Producto.articulo == lbProductos.SelectedItems[0].ToString()).ElementAt(0);
+
+                    lCuenta.Add(new Producto(prodSelec.codigo, prodSelec.articulo, prodSelec.precio, 1, prodSelec.impuestos, prodSelec.tipo));
+
+                    lbCuenta.Items.Add(lbProductos.SelectedItems[0].ToString() + " (1)");
+                }
+
+                lbProductos.SetSelected(0, false);
+
+            }
         }
 
         private void removeFromCuenta(object sender, MouseEventArgs e)
         {
+            while (lbProductos.SelectedItems.Count > 0)
+            {
 
+                var busqueda = new List<Producto>();
+
+                //mirar si hay más de 1 en cantidad y hacer 2 cosas distintas depende de ello
+
+                if (lCuenta.Count() > 0)
+                {
+                    busqueda = lCuenta.Where(Producto => Producto.articulo == lbProductos.SelectedItems[0].ToString()).ToList();
+                }
+
+
+
+                if (busqueda.Count() > 0)
+                {
+                    lCuenta.ForEach(Producto => {
+
+                        if (Producto.articulo == lbProductos.SelectedItems[0].ToString())
+                        {
+
+                            var prodAlmacen = lProductos.Where(ProductoAlamc => ProductoAlamc.articulo == Producto.articulo).ToList().ElementAt(0);
+
+                            System.Diagnostics.Debug.WriteLine(prodAlmacen.cantidad + "");
+
+                            if (Producto.cantidad < prodAlmacen.cantidad)
+                            {
+                                int a = lbCuenta.Items.IndexOf(Producto.articulo + " (" + Producto.cantidad + ")");
+
+                                lbCuenta.Items.RemoveAt(a);
+
+                                Producto.cantidad++;
+
+                                lbCuenta.Items.Insert(a, Producto.articulo + " (" + Producto.cantidad + ")");
+                            }
+
+
+
+                        }
+                    });
+
+                }
+                else
+                {
+
+                    Producto prodSelec = lProductos.Where(Producto => Producto.articulo == lbProductos.SelectedItems[0].ToString()).ElementAt(0);
+
+                    lCuenta.Add(new Producto(prodSelec.codigo, prodSelec.articulo, prodSelec.precio, 1, prodSelec.impuestos, prodSelec.tipo));
+
+                    lbCuenta.Items.Add(lbProductos.SelectedItems[0].ToString() + " (1)");
+                }
+
+                lbProductos.SetSelected(0, false);
+
+            }
         }
 
         private void payNImpress(object sender, MouseEventArgs e)

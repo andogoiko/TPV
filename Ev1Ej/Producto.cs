@@ -14,6 +14,11 @@ namespace Ev1Ej
         public double precio { get; set; }
         public double impuestos { get; set; }
         public string tipo { get; set; }
+
+        public Producto()
+        {
+
+        }
         public Producto(int codigo, string articulo)
         {
             this.codigo = codigo;

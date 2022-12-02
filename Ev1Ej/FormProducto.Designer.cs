@@ -47,7 +47,7 @@
             this.tbPrecio.Name = "tbPrecio";
             this.tbPrecio.Size = new System.Drawing.Size(124, 23);
             this.tbPrecio.TabIndex = 11;
-            this.tbPrecio.KeyDown += new System.Windows.Forms.KeyEventHandler(this.checkDoubleNumber);
+            this.tbPrecio.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.checkDoubleNumber);
             // 
             // tbArticulo
             // 
@@ -90,7 +90,7 @@
             this.tbImpuestos.Name = "tbImpuestos";
             this.tbImpuestos.Size = new System.Drawing.Size(124, 23);
             this.tbImpuestos.TabIndex = 15;
-            this.tbImpuestos.KeyDown += new System.Windows.Forms.KeyEventHandler(this.checkDoubleNumber);
+            this.tbImpuestos.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.checkDoubleNumber);
             // 
             // tbStock
             // 
@@ -98,7 +98,7 @@
             this.tbStock.Name = "tbStock";
             this.tbStock.Size = new System.Drawing.Size(124, 23);
             this.tbStock.TabIndex = 14;
-            this.tbStock.KeyDown += new System.Windows.Forms.KeyEventHandler(this.checkIntNumber);
+            this.tbStock.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.checkIntNumber);
             // 
             // lImpuestos
             // 
