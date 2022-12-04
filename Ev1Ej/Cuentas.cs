@@ -1,6 +1,5 @@
 ﻿using Microsoft.VisualBasic.ApplicationServices;
 using MySqlConnector;
-using Spire.Pdf;
 using System;
 using System.Collections;
 using System.Collections.Generic;
