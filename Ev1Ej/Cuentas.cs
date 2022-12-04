@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualBasic.ApplicationServices;
 using MySqlConnector;
+using Spire.Pdf;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,9 +8,14 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
+using PdfSharp.Pdf;
+using PdfSharp.Drawing;
+using System.Diagnostics;
 
 namespace Ev1Ej
 {
@@ -24,7 +30,7 @@ namespace Ev1Ej
         private static string user = "root";
         private static string pwd = "root";
 
-        private int aPagar = 0;
+        private double aPagar = 0;
 
         private static string connStr;
 
@@ -34,7 +40,9 @@ namespace Ev1Ej
 
         private static List<Producto> lProductos;
 
-        private static List<Producto> lCuenta = new List<Producto>();
+        private static List<Producto> lCuenta;
+
+        private StringReader myReader;
 
         public Cuentas()
         {
@@ -60,6 +68,7 @@ namespace Ev1Ej
         connStr = "server=" + server + ";database=" + database + ";Port=" + port + ";Uid=" + user + ";pwd=" + pwd + ";";
 
         lProductos = new List<Producto>();
+        lCuenta = new List<Producto>();
         Producto p;
 
         using (MySqlConnection conn = new MySqlConnection(connStr))
@@ -92,7 +101,10 @@ namespace Ev1Ej
     {
         lbProd.Items.Clear();
         lProductos.Clear();
-    }
+
+        lbCliCuenta.Items.Clear();
+        lCuenta.Clear();
+     }
 
     private void goToMenuCamareros(object sender, MouseEventArgs e)
         {
@@ -164,6 +176,8 @@ namespace Ev1Ej
                     lbCuenta.Items.Add(lbProductos.SelectedItems[0].ToString() + " (1)");
                 }
 
+                totalAPagar();
+
                 lbProductos.SetSelected(0, false);
 
             }
@@ -199,6 +213,8 @@ namespace Ev1Ej
                     lbCuenta.Items.Remove(lbCuenta.SelectedItems[0]);
                 }
 
+                totalAPagar();
+
 
                 lbCuenta.SetSelected(0, false);
 
@@ -208,19 +224,112 @@ namespace Ev1Ej
 
         private void totalAPagar()
         {
-            //recorrer el array de cuenta hacer el calculo y llamar a esta función cada vez k se añada o quite algo
+
+            aPagar = 0;
+
+            double masImpuestos;
+
+            lCuenta.ForEach(Prod =>
+            {
+
+                masImpuestos = Prod.precio * Prod.impuestos;
+
+                aPagar += (Prod.precio + masImpuestos) * Prod.cantidad;
+            });
+
+            lTotal.Text = "Recibo Total: " + aPagar;
+
         }
 
         private void payNImpress(object sender, MouseEventArgs e)
         {
-            //recorrer la completa y mirar cual esta en cuenta, creas nueva lista y copias todo menos stock, debes restar lo de cuanta a productos y llamas a un update
 
-            //  hay k coger los k esten en ambas listas y actualizar bbdd mediante el de la lista de productos, pues ahí está reflejado en vivo el stock
-            // se hace cuenta de pagar mediante la lista de cuenta y imprimir no se como va la vd
-        }
+            List<Producto> lActualizar = new List<Producto>();
+
+            for(int i = 0; i < lProductos.Count; i++)
+            {
+                
+                for (int j = 0; j < lCuenta.Count; j++)
+                {
+                    if(lProductos[i].articulo == lCuenta[j].articulo)
+                    {
+                        var prodAux = lProductos[i];
+                        prodAux.cantidad = prodAux.cantidad - lCuenta[i].cantidad;
+
+                        lActualizar.Add(prodAux);
+                    }
+                }
+            }
+
+            connStr = "server=" + server + ";database=" + database + ";Port=" + port + ";Uid=" + user + ";pwd=" + pwd + ";";
+
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                conn.Open();
+
+                lActualizar.ForEach(prod =>
+                {
+                    MySqlCommand cmd = new MySqlCommand("UPDATE PRODUCTOS SET stock = " + prod.cantidad + " WHERE codigo = " + prod.codigo + ";", conn);
+
+
+                     cmd.ExecuteReader();
+
+                });
+
+            }
+            print();
+
+            clearList();
+            feedList();
+
+         }
 
         private void print()
         {
+
+            string cuentaPDF = "";
+
+            lCuenta.ForEach(prodCuenta =>
+            {
+                cuentaPDF += prodCuenta.articulo + "\t" + prodCuenta.precio + "\t" + "X(" + prodCuenta.cantidad + ")\n";
+            });
+
+            cuentaPDF += "Total: " + aPagar.ToString();
+
+
+            // Create a new PDF document
+
+            PdfDocument document = new PdfDocument();
+
+            document.Info.Title = "Cuenta";
+
+            // Create an empty page
+
+            PdfPage page = document.AddPage();
+
+            // Get an XGraphics object for drawing
+
+            XGraphics gfx = XGraphics.FromPdfPage(page);
+
+            // Create a font
+
+            XFont font = new XFont("Verdana", 20, XFontStyle.BoldItalic);
+
+            // Draw the text
+
+            gfx.DrawString(cuentaPDF, font, XBrushes.Black,
+                new XRect(0, 0, page.Width, page.Height),
+                XStringFormats.Center);
+
+            // Save the document...
+
+            const string filename = "Cuenta.pdf";
+
+            document.Save(filename);
+
+            // ...and start a viewer.
+
+            Process.Start(filename);
 
         }
 
