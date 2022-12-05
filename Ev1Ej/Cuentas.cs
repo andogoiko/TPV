@@ -313,7 +313,7 @@ namespace Ev1Ej
         {
 
             // Set the output dir and file name
-            string directory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            string directory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             string file = "Cuenta.pdf";
 
             PrintDocument pDoc = new PrintDocument()
