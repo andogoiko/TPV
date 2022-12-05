@@ -12,9 +12,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
-using PdfSharp.Pdf;
-using PdfSharp.Drawing;
 using System.Diagnostics;
+using iTextSharp.text.html.simpleparser;
+using iTextSharp.text.pdf;
+using iTextSharp.text;
+using Document = iTextSharp.text.Document;
+using System.Drawing.Printing;
+using Font = System.Drawing.Font;
 
 namespace Ev1Ej
 {
@@ -137,8 +141,9 @@ namespace Ev1Ej
                             var prodAlmacen = lProductos.Where(ProductoAlamc => ProductoAlamc.articulo == Producto.articulo).ToList().ElementAt(0);
 
                             System.Diagnostics.Debug.WriteLine(prodAlmacen.cantidad + "");
+                            System.Diagnostics.Debug.WriteLine(Producto.cantidad + " el de la lista");
 
-                            if (Producto.cantidad < prodAlmacen.cantidad)
+                            if (Producto.cantidad < prodAlmacen.cantidad && prodAlmacen.cantidad > 0)
                             {
                                 int a = lbCuenta.Items.IndexOf(Producto.articulo + " (" + Producto.cantidad + ")");
 
@@ -170,9 +175,24 @@ namespace Ev1Ej
 
                     Producto prodSelec = lProductos.Where(Producto => Producto.articulo == lbProductos.SelectedItems[0].ToString()).ElementAt(0);
 
-                    lCuenta.Add(new Producto(prodSelec.codigo, prodSelec.articulo, prodSelec.precio, 1, prodSelec.impuestos, prodSelec.tipo));
+                    if(prodSelec.cantidad > 0)
+                    {
+                        lCuenta.Add(new Producto(prodSelec.codigo, prodSelec.articulo, prodSelec.precio, 1, prodSelec.impuestos, prodSelec.tipo));
 
-                    lbCuenta.Items.Add(lbProductos.SelectedItems[0].ToString() + " (1)");
+                        lbCuenta.Items.Add(lbProductos.SelectedItems[0].ToString() + " (1)");
+                    }
+                    else
+                    {
+                        // Initializes the variables to pass to the MessageBox.Show method.
+                        string message = "No quedan existencias";
+                        string caption = "Error de stock";
+                        MessageBoxButtons buttons = MessageBoxButtons.OK;
+                        DialogResult result;
+
+                        // Displays the MessageBox.
+                        MessageBox.Show(message, caption, buttons);
+                    }
+
                 }
 
                 totalAPagar();
@@ -184,14 +204,16 @@ namespace Ev1Ej
 
         private void removeFromCuenta(object sender, MouseEventArgs e)
         {
-            while (lbProductos.SelectedItems.Count > 0)
+            while (lbCuenta.SelectedItems.Count > 0)
             {
 
                 var busqueda = new List<Producto>();
 
                 //mirar si hay más de 1 en cantidad y hacer 2 cosas distintas depende de ello
 
-                 busqueda = lCuenta.Where(Producto => Producto.articulo == lbProductos.SelectedItems[0].ToString()).ToList();
+                string articuloName = lbCuenta.SelectedItems[0].ToString();
+
+                 busqueda = lCuenta.Where(Producto => Producto.articulo == articuloName.Substring(0, articuloName.Length - 4)).ToList();
 
                 if (busqueda.ElementAt(0).cantidad > 1)
                 {
@@ -207,6 +229,7 @@ namespace Ev1Ej
                 }
                 else
                 {
+
                     lCuenta = lCuenta.Where(cProd => cProd != busqueda.ElementAt(0)).ToList();
 
                     lbCuenta.Items.Remove(lbCuenta.SelectedItems[0]);
@@ -214,8 +237,6 @@ namespace Ev1Ej
 
                 totalAPagar();
 
-
-                lbCuenta.SetSelected(0, false);
 
             }
         }
@@ -236,7 +257,9 @@ namespace Ev1Ej
                 aPagar += (Prod.precio + masImpuestos) * Prod.cantidad;
             });
 
-            lTotal.Text = "Recibo Total: " + aPagar;
+            aPagar = Math.Round(aPagar, 2);
+
+            lTotal.Text = "Recibo Total: " + aPagar + "€";
 
         }
 
@@ -253,7 +276,7 @@ namespace Ev1Ej
                     if(lProductos[i].articulo == lCuenta[j].articulo)
                     {
                         var prodAux = lProductos[i];
-                        prodAux.cantidad = prodAux.cantidad - lCuenta[i].cantidad;
+                        prodAux.cantidad = prodAux.cantidad - lCuenta[j].cantidad;
 
                         lActualizar.Add(prodAux);
                     }
@@ -264,72 +287,70 @@ namespace Ev1Ej
 
             using (MySqlConnection conn = new MySqlConnection(connStr))
             {
-                conn.Open();
 
                 lActualizar.ForEach(prod =>
                 {
+                    conn.Open();
+
                     MySqlCommand cmd = new MySqlCommand("UPDATE PRODUCTOS SET stock = " + prod.cantidad + " WHERE codigo = " + prod.codigo + ";", conn);
 
 
-                     cmd.ExecuteReader();
+                    cmd.ExecuteReader();
+
+                    conn.Close();
 
                 });
 
             }
-            print();
+            printPDF();
 
             clearList();
             feedList();
 
          }
 
-        private void print()
+        private void printPDF()
+        {
+
+            // Set the output dir and file name
+            string directory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            string file = "Cuenta.pdf";
+
+            PrintDocument pDoc = new PrintDocument()
+            {
+                PrinterSettings = new PrinterSettings()
+                {
+                    PrinterName = "Microsoft Print to PDF",
+                    PrintToFile = true,
+                    PrintFileName = System.IO.Path.Combine(directory, file),
+                }
+            };
+
+            pDoc.PrintPage += new PrintPageEventHandler(Print_Page);
+            pDoc.Print();
+
+        }
+
+        void Print_Page(object sender, PrintPageEventArgs e)
         {
 
             string cuentaPDF = "";
 
+
             lCuenta.ForEach(prodCuenta =>
             {
-                cuentaPDF += prodCuenta.articulo + "\t" + prodCuenta.precio + "\t" + "X(" + prodCuenta.cantidad + ")\n";
+                cuentaPDF += prodCuenta.articulo + "    " + prodCuenta.precio + "€    " + "X(" + prodCuenta.cantidad + ")\n";
             });
 
-            cuentaPDF += "Total: " + aPagar.ToString();
+            cuentaPDF += "Total: " + aPagar.ToString() + "€";
 
+            // Here you can play with the font style 
+            // (and much much more, this is just an ultra-basic example)
+            Font fnt = new Font("Courier New", 12);
 
-            // Create a new PDF document
-
-            PdfDocument document = new PdfDocument();
-
-            document.Info.Title = "Cuenta";
-
-            // Create an empty page
-
-            PdfPage page = document.AddPage();
-
-            // Get an XGraphics object for drawing
-
-            XGraphics gfx = XGraphics.FromPdfPage(page);
-
-            // Create a font
-
-            XFont font = new XFont("Verdana", 20, XFontStyle.BoldItalic);
-
-            // Draw the text
-
-            gfx.DrawString(cuentaPDF, font, XBrushes.Black,
-                new XRect(0, 0, page.Width, page.Height),
-                XStringFormats.Center);
-
-            // Save the document...
-
-            const string filename = "Cuenta.pdf";
-
-            document.Save(filename);
-
-            // ...and start a viewer.
-
-            Process.Start(filename);
-
+            // Insert the desired text into the PDF file
+            e.Graphics.DrawString
+              (cuentaPDF, fnt, System.Drawing.Brushes.Black, 0, 0);
         }
 
 
